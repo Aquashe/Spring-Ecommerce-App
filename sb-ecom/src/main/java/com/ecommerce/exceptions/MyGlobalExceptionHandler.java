@@ -1,6 +1,7 @@
 package com.ecommerce.exceptions;
 
 import com.ecommerce.payload.APIResponse;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -20,6 +21,17 @@ public class MyGlobalExceptionHandler {
         exception.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError)error).getField();
             String errorMessage = error.getDefaultMessage();
+            response.put(fieldName, errorMessage);
+        });
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Map<String , String>> myConstraintViolationException(ConstraintViolationException exception) {
+        Map<String , String> response = new HashMap<>();
+        exception.getConstraintViolations().forEach((violation) -> {
+            String fieldName = violation.getPropertyPath().toString();
+            String errorMessage = violation.getMessage();
             response.put(fieldName, errorMessage);
         });
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
