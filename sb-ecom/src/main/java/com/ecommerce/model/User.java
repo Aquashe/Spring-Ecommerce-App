@@ -7,8 +7,11 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -43,5 +46,14 @@ public class User {
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_Id")
             ,inverseJoinColumns = @JoinColumn(name = "role_Id"))
     private Set<Role> roleSet = new HashSet<>();
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "user" , cascade = {CascadeType.PERSIST,CascadeType.MERGE},orphanRemoval = true)
+    private Set<Product> productSet = new HashSet<>();
+
+    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE})
+    @JoinTable(name = "user_address",joinColumns = @JoinColumn(name = "user_id"),
+    inverseJoinColumns = @JoinColumn(name = "address_id"))
+    private List<Address> addressList = new ArrayList<>();
 
 }
