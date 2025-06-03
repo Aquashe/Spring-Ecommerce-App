@@ -1,5 +1,8 @@
-package com.ecommerce.security.jwt;
+package com.ecommerce.security.response;
 
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +12,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginResponse {
+public class UserInfoResponse {
+    private Long userId;
     private  String jwtToken;
     private String username;
     private List<String> roles;

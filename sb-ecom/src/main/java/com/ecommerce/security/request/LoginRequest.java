@@ -1,4 +1,4 @@
-package com.ecommerce.security.jwt;
+package com.ecommerce.security.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
