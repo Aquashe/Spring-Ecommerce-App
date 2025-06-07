@@ -56,4 +56,9 @@ public class User {
     inverseJoinColumns = @JoinColumn(name = "address_id"))
     private List<Address> addressList = new ArrayList<>();
 
+    public User(@NotBlank @Size(min = 3, max = 50) String username, @NotBlank @Size(min = 3, max = 20) @Email String email, String encode) {
+        this.username = username;
+        this.email = email;
+        this.password = encode;
+    }
 }
