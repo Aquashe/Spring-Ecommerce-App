@@ -17,13 +17,15 @@ public class APIException extends RuntimeException{
     }
 
     public APIException(String resorceName ,String fieldName ,String field ){
-        super(String.format("No %s found with %s : %s ", resorceName, fieldName, field));
+        super(String.format("No %s found with %s : %s ", resorceName, field, fieldName));
         this.resorceName = resorceName;
         this.fieldName = fieldName;
         this.field = field;
     }
 
+    public APIException (String resorceName ,String fieldName ,Integer field){
+        super(String.format("Please make an  order of the %s %s less than or equal to the available quantity %s.", resorceName, fieldName, field));
+    }
     public APIException(){
-
     }
 }

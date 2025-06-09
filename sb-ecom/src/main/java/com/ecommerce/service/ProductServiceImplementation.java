@@ -56,7 +56,7 @@ public class ProductServiceImplementation implements ProductService {
             product.setCategory(category);
             product.setImage("default.png");
             double specialPrice = returnProductSpecialPrice(product.getPrice(), product.getDiscount());
-            product.setSpentPrice(specialPrice);
+            product.setSpecialPrice(specialPrice);
             Product savedProduct = productRepository.save(product);
             return modelMapper.map(savedProduct, ProductDTO.class);
         }else
@@ -155,7 +155,7 @@ public class ProductServiceImplementation implements ProductService {
         productFromDB.setDiscount(productFromRequest.getDiscount());
         productFromDB.setProductDescription(productFromRequest.getProductDescription());
         productFromDB.setQuantity(productFromRequest.getQuantity());
-        productFromDB.setSpentPrice(returnProductSpecialPrice(productFromRequest.getPrice(),productFromRequest.getDiscount()));
+        productFromDB.setSpecialPrice(returnProductSpecialPrice(productFromRequest.getPrice(),productFromRequest.getDiscount()));
         Product savedProduct = productRepository.save(productFromDB);
         return modelMapper.map(savedProduct, ProductDTO.class);
     }
