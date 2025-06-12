@@ -152,14 +152,25 @@ public class CartServiceImplementation implements CartService {
         //For updating the quantity we need the cartItem
         CartItem newCartItem = cartItemRepository.findCartItemByProductIdAndCartID(productId,cartId);
         if(newCartItem == null)
-            throw new APIException("Cart Item","ProductName",product.getProductName());
+            throw new APIException("Cart Item","ProductId",String.valueOf(product.getProductId()));
 
+        //Calculate new quantity
+        int newQuantity = newCartItem.getQuantity() + quantity;
+        if(newQuantity > product.getQuantity())
+            throw new APIException("Product","Quantity",product.getQuantity());
 
-        newCartItem.setProductPrice(product.getSpecialPrice());
-        newCartItem.setQuantity(newCartItem.getQuantity() + quantity);
-        newCartItem.setDiscount(product.getDiscount());
-        cart.setTotalPrice(newCartItem.getProductPrice() + (product.getPrice() * quantity));
-        cartRepository.save(cart);
+        if(newQuantity<0)
+            throw new APIException("Product","Quantity",newQuantity);
+
+        if(newQuantity ==0)
+            cartItemRepository.deleteCartItemByProductIdAndCartId(productId,cartId);
+        else{
+            newCartItem.setProductPrice(product.getSpecialPrice());
+            newCartItem.setQuantity(newCartItem.getQuantity() + quantity);
+            newCartItem.setDiscount(product.getDiscount());
+            cart.setTotalPrice(newCartItem.getProductPrice() + (product.getPrice() * quantity));
+            cartRepository.save(cart);
+        }
         CartItem updatedCartItem = cartItemRepository.save(newCartItem);
 
         //If product is empty , there is no need for the cart item
@@ -175,6 +186,21 @@ public class CartServiceImplementation implements CartService {
                 }).toList();
         cartDTO.setProductDTOS(productDTOS);
         return cartDTO;
+    }
+
+    @Transactional
+    @Override
+    public String deleteProductFromCart(Long cartId, Long productId) {
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new ResourceNotFoundException("Cart","cartId",cartId));
+        CartItem cartItem = cartItemRepository.findCartItemByProductIdAndCartID(productId,cartId);
+        if(cartItem == null)
+            throw new ResourceNotFoundException("CartItem","productId",productId);
+
+        cart.setTotalPrice(cart.getTotalPrice() - (cartItem.getProductPrice() * cartItem.getQuantity()));
+        cartItemRepository.deleteCartItemByProductIdAndCartId(productId,cartId);
+        cartRepository.save(cart);
+        return "Product "+cartItem.getProduct().getProductId()+" removed from cart !!!!";
     }
 
 

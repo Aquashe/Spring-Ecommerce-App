@@ -16,7 +16,7 @@ public class APIException extends RuntimeException{
         this.resorceName = resorceName;
     }
 
-    public APIException(String resorceName ,String fieldName ,String field ){
+    public APIException(String resorceName ,String field ,String fieldName){
         super(String.format("No %s found with %s : %s ", resorceName, field, fieldName));
         this.resorceName = resorceName;
         this.fieldName = fieldName;
