@@ -16,5 +16,9 @@ public interface CartService {
     @Transactional
     CartDTO updateProductQuantityInCart(Long productId, Integer quantity);
 
+    @Transactional
     String deleteProductFromCart(Long cartId, Long productId);
+
+    @Transactional
+    void updateProductInCart(Long cartId, Long productId);
 }
