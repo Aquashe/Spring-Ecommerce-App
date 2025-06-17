@@ -136,9 +136,9 @@ public class CartServiceImplementation implements CartService {
     @Transactional
     @Override
     public CartDTO updateProductQuantityInCart(Long productId, Integer quantity) {
-        Cart cart = cartRepository.findCartByEmail(authUtil.loggedInEmail());
-        Long cartId = cart.getCartId();
-        Cart existingCart = cartRepository.findById(cartId)
+        Cart userCart = cartRepository.findCartByEmail(authUtil.loggedInEmail());
+        Long cartId = userCart.getCartId();
+        Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart","cartId",cartId));
 
 
@@ -159,16 +159,13 @@ public class CartServiceImplementation implements CartService {
         if(newQuantity > product.getQuantity())
             throw new APIException("Product","Quantity",product.getQuantity());
 
-        if(newQuantity<0)
-            throw new APIException("Product","Quantity",newQuantity);
-
         if(newQuantity ==0)
             cartItemRepository.deleteCartItemByProductIdAndCartId(productId,cartId);
         else{
             newCartItem.setProductPrice(product.getSpecialPrice());
             newCartItem.setQuantity(newCartItem.getQuantity() + quantity);
             newCartItem.setDiscount(product.getDiscount());
-            cart.setTotalPrice(newCartItem.getProductPrice() + (product.getPrice() * quantity));
+            cart.setTotalPrice(cart.getTotalPrice() + (product.getSpecialPrice() * quantity) );
             cartRepository.save(cart);
         }
         CartItem updatedCartItem = cartItemRepository.save(newCartItem);
@@ -225,6 +222,7 @@ public class CartServiceImplementation implements CartService {
         cart.setTotalPrice(oldCartPrice + (cartItem.getProductPrice() * cartItem.getQuantity()));
 
         cartItem = cartItemRepository.save(cartItem);
+        cartRepository.save(cart);
 
     }
 
