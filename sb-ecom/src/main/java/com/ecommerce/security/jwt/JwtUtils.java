@@ -28,6 +28,7 @@ public class JwtUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
+    //@Value("${spring.app.jwtSecret}")
     @Value("${spring.app.jwtSecret}")
     private String jwtSecret;
 
